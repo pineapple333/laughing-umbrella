@@ -7,6 +7,7 @@ class Publication:
         self.authors = []
         self.title = ""
         self.points = 0
+        self.year = 0
 
     def __repr__(self):
-        return f'\n\tAuthors: {self.authors},\n\tTitle: {self.title},\n\tPoints: {self.points}'
+        return f'\n\tAuthors: {self.authors},\n\tTitle: {self.title},\n\tPoints: {self.points},\n\tYear: {self.year}'

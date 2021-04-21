@@ -21,12 +21,12 @@ def search(names, dates):
     soup = BeautifulSoup(r.text, 'html.parser')
 
     # find all script tags from the source page where there's a 'fields part'
-    fields = filter(lambda x: True if 'fields' in x.string else False,
+    fields = list(filter(lambda x: True if 'fields' in x.string else False,
                         soup.find_all('script', type='text/javascript', src=None)
-                )
+                ))
 
     # there should be only one result so take the first one from the list
-    data = list(fields)[0]
+    data = fields[0] if len(fields) > 0 else ["There are no publications"]
 
     # take all element that are between curly brackets
     elements = re.findall(r"\{(.*?)\}", str(data))
@@ -42,11 +42,13 @@ def search(names, dates):
             publications.append(publication)
             publication = Publication()
         if left.strip('"') == "dc.contributor.author":
-            publication.authors.append(re.sub('[\"\s+]', '', right))
+            publication.authors.append(right.replace('\"',''))
         if left.strip('"') == "dc.title":
-            publication.title = right.strip('"')
+            publication.title = right.replace('\"','')
         if left.strip('"') == "dc.pointsMNiSW":
             publication.points = int(right.strip('"').split(':')[1].strip(' '))
+        if left.strip('"') == "dc.date.issued":
+            publication.year = right.strip('"')
     publications.append(publication)
 
     print(publications)
