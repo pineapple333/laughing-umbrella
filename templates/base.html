@@ -8,9 +8,14 @@
     <title>Common {% block title %}{% endblock %}</title>
 </head>
 <body>
+    <!--TODO::Add proper css file, and move this content of style-->
+    <div class="header" style='background-color:#3260a8; color:white; height:90px; margin-bottom: 50px'>
+        <div class="logo"><h1>SWEW</h1></div>
+        <div class="small_logo_text">System Wspomagający Ewaluację Wydziału</div>
+    </div>
     <div class = 'container' >
         <div class='row'>
-            <div class='col-md-6 m-auto'> 
+            <div class='col-md-12 m-auto'>
                 {% block content %}{% endblock %}
             </div>
         </div>
