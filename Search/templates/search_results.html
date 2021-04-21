@@ -5,7 +5,7 @@
     <!--TODO::Add proper css file, and move this content of style-->
     {% if pub %}
     <div class="data-result" style='height:90px; margin-bottom: 20px; box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.1); padding:20px;'>
-        {{ pub.authors }} {{ pub.title }} {{pub.points}}
+        {{ pub.authors }} {{ pub.title }} {{ pub.points }} {{ pub.year }}
     </div>
     {% endif %}
     {% endfor %}

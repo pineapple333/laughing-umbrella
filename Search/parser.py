@@ -26,7 +26,7 @@ def search(names, dates):
                 ))
 
     # there should be only one result so take the first one from the list
-    data = fields[0] if len(fields) > 0 else ["There are no publications"]
+    data = fields[0] if len(fields) > 0 else []
 
     # take all element that are between curly brackets
     elements = re.findall(r"\{(.*?)\}", str(data))
@@ -46,12 +46,12 @@ def search(names, dates):
         if left.strip('"') == "dc.title":
             publication.title = right.replace('\"','')
         if left.strip('"') == "dc.pointsMNiSW":
-            publication.points = int(right.strip('"').split(':')[1].strip(' '))
+            publication.points = int(right.replace('\"','').split(':')[1].strip(' '))
         if left.strip('"') == "dc.date.issued":
-            publication.year = right.strip('"')
+            publication.year = right.replace('\"','')
     publications.append(publication)
 
-    print(publications)
+    # print(publications)
 
     #print(f"Decoded URL: {requests.utils.unquote('https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=%2F&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Dybiec%2C+Bart%C5%82omiej+%5BSAP11018789%5D&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2=2018%2C+2019&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=%2F')}")
 
