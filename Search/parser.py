@@ -15,8 +15,41 @@ def search(names, dates):
     # date = '2018, 2019'
     name = names
     date = dates
-    link = f'https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1={name}&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2={date}&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=/'
+    # if not date:
+    #     link = f'https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1={name}&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=/'
+    # else:
+    #     link = f'https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1={name}&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2={date}&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=/'
 
+    date_from, date_to = dates.split(',')
+    dates_range = []
+    try:
+        date_from = int(date_from)
+        date_to = int(date_to)+1
+        dates_range = str(list(range(date_from, date_to)))[1:-1]
+        if not dates_range:
+            dates_range = date_from
+    except ValueError:
+        publication = Publication()
+        publication.title = 'Can\'t parse one of the dates'
+        return [publication]
+    front = 'https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/'
+    splited_names = names.split(';')
+    cnt = 1
+    for name in splited_names:
+        front += f'&filtertype_{cnt}=author&filter_relational_operator_{cnt}=equals&filter_{cnt}={name}'
+        cnt += 1
+    if date:
+        front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
+    link = front
+
+    print(link)
+    # print(f'Dates: {dates}')
+# 'https://ruj.uj.edu.pl/xmlui/handle/item/82915?view=mod1&search-result=true&query=&current-scope=&filtertype_0=author&filtertype_1=title&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0=Cie%C5%9Bla%2C+Micha%C5%82+%5BSAP11018214%5D&rpp=50&sort_by=score&order=desc'
+# Cieśla, Michał [SAP11018214]
+# Dybiec, Bartłomiej [SAP11018789]
+# https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Dybiec,+Bartłomiej+[SAP11018789]&submit_apply_filter=Apply&query=&scope=/
+# https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_2=author&filter_relational_operator_2=equals&filter_2=Dybiec,+Bartłomiej+[SAP11018789]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Capała,+Karol+[USOS176576]&submit_apply_filter=Apply&query=&scope=/
+    
     r = requests.get(link)
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -41,7 +74,7 @@ def search(names, dates):
         if left.strip('"') == "dc.id":
             publications.append(publication)
             publication = Publication()
-        if left.strip('"') == "dc.contributor.author":
+        if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
             publication.authors.append(right.replace('\"',''))
         if left.strip('"') == "dc.title":
             publication.title = right.replace('\"','')
