@@ -74,7 +74,8 @@ def search(names, dates):
         if left.strip('"') == "dc.id":
             publications.append(publication)
             publication = Publication()
-        if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
+        # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
+        if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))
         if left.strip('"') == "dc.title":
             publication.title = right.replace('\"','')
