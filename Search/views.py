@@ -6,9 +6,36 @@ from .parser import search
 import math
 
 from .forms import SearchForm
-
 # Create your views here.
+max_points=0
+points=0
+numery=[]
+max_numery=[]
+cost=0.0
 
+def rec_choose(publikacje):
+	global max_points
+	global points
+	global numery
+	global max_numery
+	global cost
+	for numer, publikacja in enumerate(publikacje):
+		print(publikacja.cost)
+		print(cost)
+		print("---")
+		if publikacja.cost<=(2.0-cost) and numer not in numery :
+			numery.append(numer)
+			points=points+publikacja.points
+			cost=cost+publikacja.cost
+			if(max_points<points):
+				max_points=points
+				max_numery=numery.copy()
+			rec_choose(publikacje)
+			points=points-publikacja.points
+			cost=cost-publikacja.cost
+			numery.pop()
+	return None
+			
 def search_results(request):
 	print("REQ BODY")
 
@@ -23,6 +50,8 @@ def search_results(request):
             #publikacje = search('Dybiec, Bartłomiej [SAP11018789]', '2018, 2019')
 			dates = str(form.cleaned_data['date1'].year)+', '+str(form.cleaned_data['date2'].year)
 			print(dates)
+			global max_numery
+			global max_points
 			publikacje = search(form.cleaned_data['authors'], dates)
 			k=1
 			if publikacje[0]==None:
@@ -44,6 +73,12 @@ def search_results(request):
 				publikacja.points=punkty/k
 				publikacja.cost=koszt
 				publikacja.m=len(publikacja.authors)
+			print(len(publikacje))
+			rec_choose(publikacje)
+			for i, numer in enumerate(max_numery):
+				max_numery[i]=publikacje[numer]
+			publikacje=max_numery
+			
 		result = {'publikacje': publikacje,}
 		return render(request, 'search_results.html', result)
 
