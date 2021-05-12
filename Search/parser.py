@@ -68,7 +68,10 @@ def search(names, dates):
     publication = None
 
     for element in elements:
-        left, right = element.split(':', 1)
+        try:
+            left, right = element.split(':', 1)
+        except ValueError:
+            continue
         # print(f'Left: {left}, right: {right}')
         # print(len(element.split(':')))
         if left.strip('"') == "dc.id":

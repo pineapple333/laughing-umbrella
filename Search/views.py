@@ -103,6 +103,10 @@ def search_results(request):
                 for i, numer in enumerate(max_numery):
                     best_publications.append(publikacje[numer])
 
+                for publikacja in publikacje:
+                    publikacja.points = round(publikacja.points, 3)
+                    publikacja.cost = round(publikacja.cost, 3)
+
                 sumOfPoints += max_points
 
                 author.max_points = max_points
