@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form action="/search/" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit">Search</button>
-    </form>
+    <h2>Wyszukaj</h2>
+    <div class="data-result search-bar">
+        <form action="/search/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
 {% endblock %}

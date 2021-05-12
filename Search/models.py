@@ -13,3 +13,11 @@ class Publication:
 
 	def __repr__(self):
 		return f'\n\tAuthors: {self.authors},\n\tTitle: {self.title},\n\tPoints: {self.points},\n\tYear: {self.year}'
+
+
+class Author:
+	def __init__(self):
+		self.name_surname = ""
+		self.publications = []
+		self.best_publications = []
+		self.max_points = 0

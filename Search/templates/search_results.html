@@ -1,12 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for pub in publikacje %}
-    <!--TODO::Add proper css file, and move this content of style-->
-    {% if pub %}
-    <div class="data-result" style='height:90px; margin-bottom: 20px; box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.1); padding:20px;'>
-        {{ pub.authors }} {{ pub.title }} {{ pub.points }} {{pub.cost}} {{ pub.year }}
-    </div>
-    {% endif %}
+        <div class="card-top sum-wrapper">
+            <div class="sum-of-points">Sumaryczna liczba punktów</div>
+            <div class="sum-of-points">{{ sumOfPoints }}</div>
+        </div>
+    {% for author in authors %}
+        <div class="data-result">
+            <div class="card-top">
+                <div class="author_name">{{ author.name_surname }}</div>
+                <div class="card-top">
+                    <div class="points-text">Uzyskane punkty:</div> <div class="author_name">{{ author.max_points }}</div>
+                </div>
+            </div>
+            <div class="pub-list-title">Najlepsze publikacje:</div>
+            <div class="pub-wrapper card-pub-over">
+                <div class="pub-part name-part">Nazwa</div>
+                <div class="pub-part margin-better rest-pub-part">Punkty</div>
+                <div class="pub-part rest-pub-part">Koszt</div>
+                <div class="pub-part rest-pub-part">Rok publikacji</div>
+            </div>
+            {% for pub in author.best_publications %}
+            {% if pub %}
+            <div class="pub-wrapper">
+                <div class="pub-part name-part">{{ pub.title }}</div>
+                <div class="pub-part margin-better rest-pub-part">{{ pub.points }}</div>
+                <div class="pub-part rest-pub-part">{{ pub.cost }}</div>
+                <div class="pub-part rest-pub-part">{{ pub.year }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
     {% endfor %}
 {% endblock %}
