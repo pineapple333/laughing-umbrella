@@ -4,7 +4,6 @@ import requests
 import re
 from .models import Publication
 
-
 def search(names, dates):
 
     # link = 'https://ruj.uj.edu.pl/xmlui/discover?filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+%5BSAP11018214%5D&filtertype_2=dateIssued&filter_relational_operator_2=equals&filter_2=2019&view=mod1&'
@@ -32,17 +31,10 @@ def search(names, dates):
         publication = Publication()
         publication.title = 'Can\'t parse one of the dates'
         return [publication]
-    front = 'https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/'
-    splited_names = names.split(';')
-    cnt = 1
-    for name in splited_names:
-        front += f'&filtertype_{cnt}=author&filter_relational_operator_{cnt}=equals&filter_{cnt}={name}'
-        cnt += 1
-    if date:
-        front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
-    link = front
-
+    link = f'https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1={name}&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2={dates_range}&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=/'
+    
     print(link)
+
     # print(f'Dates: {dates}')
 # 'https://ruj.uj.edu.pl/xmlui/handle/item/82915?view=mod1&search-result=true&query=&current-scope=&filtertype_0=author&filtertype_1=title&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0=Cie%C5%9Bla%2C+Micha%C5%82+%5BSAP11018214%5D&rpp=50&sort_by=score&order=desc'
 # Cieśla, Michał [SAP11018214]
