@@ -20,9 +20,6 @@ def rec_choose(publikacje):
 	global max_numery
 	global cost
 	for numer, publikacja in enumerate(publikacje):
-		print(publikacja.cost)
-		print(cost)
-		print("---")
 		if publikacja.cost<=(2.0-cost) and numer not in numery :
 			numery.append(numer)
 			points=points+publikacja.points
@@ -73,11 +70,11 @@ def search_results(request):
 				publikacja.points=punkty/k
 				publikacja.cost=koszt
 				publikacja.m=len(publikacja.authors)
-			print(len(publikacje))
 			rec_choose(publikacje)
-			for i, numer in enumerate(max_numery):
-				max_numery[i]=publikacje[numer]
-			publikacje=max_numery
+			publikacjetmp=[]
+			for numer in max_numery:
+				publikacjetmp.append(publikacje[numer])
+			publikacje=publikacjetmp.copy()
 			
 		result = {'publikacje': publikacje,}
 		return render(request, 'search_results.html', result)
