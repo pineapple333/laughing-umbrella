@@ -42,7 +42,7 @@ def search(names, dates):
         front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
     link = front
 
-    print(link)
+   # print(link)
     # print(f'Dates: {dates}')
 # 'https://ruj.uj.edu.pl/xmlui/handle/item/82915?view=mod1&search-result=true&query=&current-scope=&filtertype_0=author&filtertype_1=title&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0=Cie%C5%9Bla%2C+Micha%C5%82+%5BSAP11018214%5D&rpp=50&sort_by=score&order=desc'
 # Cieśla, Michał [SAP11018214]
