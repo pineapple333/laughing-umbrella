@@ -104,8 +104,8 @@ def search_results(request):
                     best_publications.append(publikacje[numer])
 
                 for publikacja in publikacje:
-                    publikacja.points = round(publikacja.points, 3)
-                    publikacja.cost = round(publikacja.cost, 3)
+                    publikacja.points = round(publikacja.points, 2)
+                    publikacja.cost = round(publikacja.cost, 2)
 
                 sumOfPoints += max_points
 

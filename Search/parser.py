@@ -3,6 +3,59 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from .models import Publication
+from lxml import etree
+
+# this function receives an ID and returns a tuple 
+# structure:
+#   key: id
+#   value: (author_name, is_affiliated)
+def parse_publication(pubId):
+
+    # create the link 
+    link = f'https://ruj.uj.edu.pl/xmlui/handle/{pubId}/pbn'
+    # get raw text
+    r = requests.get(link)
+    # parse the text
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    # print(link)
+
+    # initialize the dictionary
+    id_person_status = {}
+
+    # the table to parse from PBN
+    table = soup.find("table", {"id":"aspect_pbn_PBNItemViewer_table_employed_tab"})
+    
+    # if the table exists
+    if table:
+        # get all rows
+        rows = table.findChildren(['th', 'tr'])
+        for row in rows:
+            if row:
+
+
+                # if something is very wrong
+                if len(row.findChildren('td')) == 0:
+                    continue
+
+                # cells from one row. Left with a name. Right with a status (checkbox)
+                left_cell, right_cell = row.findChildren('td')
+
+                # first cell - get the name
+                name = re.findall(r"\>(.*?)\<", str(left_cell))[0]
+
+                # get the right cell and dig inside untill the checkbox is found. 
+                # Then get the checkbox
+                checkbox = right_cell.findChildren('input')[0]
+                # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
+                status = True if 'checked' in checkbox.attrs.values() else False
+
+                # reporting for debug purposes
+                # print(f'Name: {name}, status: {status}')
+
+                id_person_status [pubId] = (name, status)
+    
+    return id_person_status
 
 
 def search(names, dates):
@@ -77,6 +130,7 @@ def search(names, dates):
         if left.strip('"') == "dc.id":
             publications.append(publication)
             publication = Publication()
+            parse_publication(right.replace('\"','').replace(' ',''))
         # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
         if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))
