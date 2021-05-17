@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 class Publication:
 	def __init__(self):
+		self.id = ""
 		self.authors = []
 		self.title = ""
 		self.points = 0

@@ -5,6 +5,7 @@ import re
 from .models import Publication
 from lxml import etree
 
+
 # this function receives an ID and returns a tuple 
 # structure:
 #   key: id
@@ -21,7 +22,8 @@ def parse_publication(pubId):
     # print(link)
 
     # initialize the dictionary
-    id_person_status = {}
+    id_person_status = []
+
 
     # the table to parse from PBN
     table = soup.find("table", {"id":"aspect_pbn_PBNItemViewer_table_employed_tab"})
@@ -52,8 +54,10 @@ def parse_publication(pubId):
 
                 # reporting for debug purposes
                 # print(f'Name: {name}, status: {status}')
+                if status:
+                    id_person_status.append((name, status))
 
-                id_person_status [pubId] = (name, status)
+    #print(id_person_status)
     
     return id_person_status
 
@@ -118,6 +122,7 @@ def search(names, dates):
     elements = re.findall(r"\{(.*?)\}", str(data))
 
     publications = []
+    same_department_list = []
     publication = None
 
     for element in elements:
@@ -128,9 +133,10 @@ def search(names, dates):
         # print(f'Left: {left}, right: {right}')
         # print(len(element.split(':')))
         if left.strip('"') == "dc.id":
-            publications.append(publication)
             publication = Publication()
-            parse_publication(right.replace('\"','').replace(' ',''))
+            publication.id = right.replace('\"', '').replace(' ', '')
+            publications.append(publication)
+            #same_department_list = parse_publication(right.replace('\"','').replace(' ',''))
         # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
         if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))

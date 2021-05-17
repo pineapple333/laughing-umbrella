@@ -3,7 +3,7 @@ from .models import Publication
 from .models import Author
 from django.http import HttpResponse
 import json
-from .parser import search
+from .parser import search, parse_publication
 import math
 
 from .forms import SearchForm
@@ -38,6 +38,7 @@ def rec_choose(publikacje):
             points = points - publikacja.points
             cost = cost - publikacja.cost
             numery.pop()
+    max_points = round(max_points, 2)
     return None
 
 
@@ -93,6 +94,11 @@ def search_results(request):
                         punkty = math.sqrt((k / len(publikacja.authors))) * publikacja.points
                     if punkty < publikacja.points / 10:
                         punkty = publikacja.points / 10
+
+                    #Get publication authors from same department
+                    co_department_authors = parse_publication(publikacja.id)
+
+                    k = len(co_department_authors)
                     koszt = (1 / k) * (punkty / publikacja.points)
                     publikacja.points = punkty / k
                     publikacja.cost = koszt
