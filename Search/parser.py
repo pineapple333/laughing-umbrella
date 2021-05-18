@@ -56,7 +56,7 @@ def parse_publication(pubId):
                 # print(f'Name: {name}, status: {status}')
                 id_person_status.append((name, status))
 
-    print(id_person_status)
+    # print(id_person_status)
     
     return id_person_status
 
