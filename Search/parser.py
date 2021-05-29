@@ -116,6 +116,8 @@ def search(names, dates):
 # https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Dybiec,+Bartłomiej+[SAP11018789]&submit_apply_filter=Apply&query=&scope=/
 # https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_2=author&filter_relational_operator_2=equals&filter_2=Dybiec,+Bartłomiej+[SAP11018789]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Capała,+Karol+[USOS176576]&submit_apply_filter=Apply&query=&scope=/
     
+    print(link)
+    
     r = requests.get(link)
     soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -155,7 +157,7 @@ def search(names, dates):
             publication.points = int(right.replace('\"','').split(':')[1].strip(' '))
         if left.strip('"') == "dc.date.issued":
             publication.year = right.replace('\"','')
-    publications.append(publication)
+    # publications.append(publication)
 
     # print(publications)
 
@@ -163,6 +165,9 @@ def search(names, dates):
 
     end = time.time()
 
-    print(f"Seconds: {end - start}. Minutes: {(end - start) / 60}")
+    print(f"Parsing took: Seconds: {end - start}. Minutes: {(end - start) / 60}")
+
+    for number, publication in enumerate(publications):
+        print(f"{number} : {publication.id} : {publication.title}")
 
     return publications

@@ -5,6 +5,7 @@ from django.http import HttpResponse
 import json
 from .parser import search, parse_publication
 import math
+import time
 
 from .forms import SearchForm
 
@@ -104,9 +105,12 @@ def search_results(request):
                     publikacja.cost = koszt
                     publikacja.m = len(publikacja.authors)
                 print(f"The total number of publications: {len(publikacje)}")
+                start = time.time()
                 rec_choose(publikacje)
+                end = time.time()
+                print(f"Recursive operation took: Seconds: {end - start}. Minutes: {(end - start)/60}")
                 best_publications = []
-                for i, numer in enumerate(max_numery):
+                for numer in max_numery:
                     best_publications.append(publikacje[numer])
 
                 for publikacja in publikacje:
