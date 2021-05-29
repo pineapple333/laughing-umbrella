@@ -1,5 +1,5 @@
 body{
-    background-color: rgb(247, 247, 247);
+    background-color: white;
 }
 
 .data-result{
@@ -56,6 +56,9 @@ body{
 .search-bar{
     width: 600px;
     padding-right: 60px;
+    position: fixed;
+    right: 150px;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.35);
 }
 
 .card-top{
@@ -115,3 +118,87 @@ body{
     margin-bottom: 30px;
     background-color:white;
 }
+
+.author-list{
+    margin-top: 20px;
+    border-top: 1px solid #797979;
+    padding-top: 20px;
+    width: 600px;
+}
+
+
+.author-search-card{
+    display: flex;
+    align-items: center;
+    width: 500px;
+    border-radius: 25px;
+    border: 1px solid #797979;
+    font-size: 15px;
+    padding: 5px;
+    padding-left: 15px;
+    background-color: white;
+    margin-top: 3px;
+}
+
+.delete-bttn{
+    margin-left: auto;
+    border-radius: 20px;
+    border-width: 5px;
+    border-color: #DDDDDD;
+    color: #DDDDDD;
+    background-color: white;
+    width: 35px;
+    margin-right: 3px;
+    font-weight:bold;
+}
+
+.delete-bttn:hover{
+    color: #005CA7;
+    border-color: #005CA7;
+}
+
+ul{
+    padding: 0px;
+}
+
+
+.enter-bttn{
+    margin-left: 50px;
+    border-radius: 10px;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 0;
+    background-color: #005CA7;
+    color: white;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.35);
+}
+
+
+.enter-bttn:hover{
+    color: black;
+    background-color: white;
+
+}
+
+
+.top-title{
+    font-size: 32px;
+    color: #005CA7;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.under-title{
+    font-size: 20px;
+}
+
+.input-author{
+    margin-top: 5px;
+    width: 400px;
+    font-size: 16px;
+    padding: 3px;
+    padding-left: 10px;
+    border-radius: 20px;
+}
+

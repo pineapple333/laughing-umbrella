@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Błąd połączenia z ruj</h2>
+    <div class="data-result search-bar">
+        Wystąpił problem z serwerem https://ruj.uj.edu.pl/
+        <br>
+        Błąd: {{ error }}
+    </div>
+
+{% endblock %}

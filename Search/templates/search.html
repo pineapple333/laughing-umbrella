@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Wyszukaj</h2>
     <div class="data-result search-bar">
         <form action="/search/" method="post">
             {% csrf_token %}
@@ -10,4 +9,19 @@
         </form>
     </div>
 
+
+    <div>
+        <div class="top-title">Ewaluacja pracowników</div>
+        <div class="under-title"> Wybierz pracowników </div>
+        <input id="userinput" type="text" class="input-author" placeholder="Imię, Nazwisko">
+        <button id="enter" class="enter-bttn">Dodaj do listy</button>
+
+        <ul id="bold" class="author-list">
+        </ul>
+
+    </div>
+
+
+    {% load static %}
+    <script src="{%  static  'javascript/personListActions.js'  %}"></script>
 {% endblock %}
