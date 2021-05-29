@@ -11,6 +11,7 @@ class Publication:
 		self.year = 0
 		self.cost = 0
 		self.m = 0
+		self.affiliated_authors = []
 
 	def __repr__(self):
 		return f'\n\tAuthors: {self.authors},\n\tTitle: {self.title},\n\tPoints: {self.points},\n\tYear: {self.year}'

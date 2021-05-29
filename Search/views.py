@@ -96,14 +96,14 @@ def search_results(request):
                         punkty = publikacja.points / 10
 
                     #Get publication authors from same department
-                    co_department_authors = parse_publication(publikacja.id)
+                    # co_department_authors = parse_publication(publikacja.id)
 
-                    k = len(co_department_authors)
+                    k = len(publikacja.affiliated_authors)
                     koszt = (1 / k) * (punkty / publikacja.points)
                     publikacja.points = punkty / k
                     publikacja.cost = koszt
                     publikacja.m = len(publikacja.authors)
-                print(len(publikacje))
+                print(f"The total number of publications: {len(publikacje)}")
                 rec_choose(publikacje)
                 best_publications = []
                 for i, numer in enumerate(max_numery):

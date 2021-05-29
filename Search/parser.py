@@ -4,12 +4,12 @@ import requests
 import re
 from .models import Publication
 from lxml import etree
+import time
 
 
 # this function receives an ID and returns a tuple 
 # structure:
-#   key: id
-#   value: (author_name, is_affiliated)
+#   (author_name, is_affiliated)
 def parse_publication(pubId):
 
     # create the link 
@@ -22,7 +22,7 @@ def parse_publication(pubId):
     # print(link)
 
     # initialize the dictionary
-    id_person_status = []
+    person_status = []
 
 
     # the table to parse from PBN
@@ -52,16 +52,26 @@ def parse_publication(pubId):
                 # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
                 status = True if 'checked' in checkbox.attrs.values() else False
 
-                # reporting for debug purposes
-                # print(f'Name: {name}, status: {status}')
-                id_person_status.append((name, status))
+                person_status.append((name, status))
+    else:
+        # at least the author must be affiliated
+        person_status.append(('the_author', True))
 
-    # print(id_person_status)
+    affiliated_people = []
+
+    # collected all but return affiliated only
+    for person, status in person_status:
+        if status:
+            affiliated_people.append(person)
+
+    # print(person_status)
     
-    return id_person_status
+    return affiliated_people
 
 
 def search(names, dates):
+
+    start = time.time()
 
     # link = 'https://ruj.uj.edu.pl/xmlui/discover?filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+%5BSAP11018214%5D&filtertype_2=dateIssued&filter_relational_operator_2=equals&filter_2=2019&view=mod1&'
     # correct
@@ -135,7 +145,7 @@ def search(names, dates):
             publication = Publication()
             publication.id = right.replace('\"', '').replace(' ', '')
             publications.append(publication)
-            #same_department_list = parse_publication(right.replace('\"','').replace(' ',''))
+            publication.affiliated_authors = parse_publication(publication.id)
         # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
         if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))
@@ -150,5 +160,9 @@ def search(names, dates):
     # print(publications)
 
     #print(f"Decoded URL: {requests.utils.unquote('https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=%2F&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Dybiec%2C+Bart%C5%82omiej+%5BSAP11018789%5D&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2=2018%2C+2019&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=%2F')}")
+
+    end = time.time()
+
+    print(f"Seconds: {end - start}. Minutes: {(end - start) / 60}")
 
     return publications
