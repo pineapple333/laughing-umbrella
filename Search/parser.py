@@ -6,11 +6,23 @@ from .models import Publication
 from lxml import etree
 import time
 
+def classifier(element):
+    checkbox = element.find_all('input')
+    if checkbox:
+        cb = checkbox[0]
+        if 'checked' in cb.attrs.values():
+            return True
+        else:
+            return False
+    else:
+        return element.text
 
 # this function receives an ID and returns a tuple 
 # structure:
 #   (author_name, is_affiliated)
-def parse_publication(pubId):
+def parse_publication(pubId, target_person):
+
+    clean_target_person = f"{target_person.split()[0].replace(',','')} {target_person.split()[1]}"
 
     # create the link 
     link = f'https://ruj.uj.edu.pl/xmlui/handle/{pubId}/pbn'
@@ -24,6 +36,10 @@ def parse_publication(pubId):
     # initialize the dictionary
     person_status = []
 
+    person_department = {}
+    number_department = {}
+
+    affiliated_people = [] # people who are affiliated with the author
 
     # the table to parse from PBN
     table = soup.find("table", {"id":"aspect_pbn_PBNItemViewer_table_employed_tab"})
@@ -31,43 +47,41 @@ def parse_publication(pubId):
     # if the table exists
     if table:
         # get all rows
-        rows = table.findChildren(['th', 'tr'])
-        for row in rows:
-            if row:
+        table_rows = table.find_all('tr')
 
+        for tr in table_rows:
 
-                # if something is very wrong
-                if len(row.findChildren('td')) == 0:
-                    continue
+            td = tr.find_all('th') + tr.find_all('td')
+            row = [classifier(i) for i in td]
+            # print(row)
 
-                # cells from one row. Left with a name. Right with a status (checkbox)
-                left_cell, right_cell = row.findChildren('td')
+            if row[0] == 'autor/redaktor':
+                for number, cell in enumerate(row[1:]):
+                    number_department [number] = cell.rstrip()
+            else:
+                for number, cell in enumerate(row[1:]):
+                    # get the right cell and dig inside untill the checkbox is found. 
+                    # Then get the checkbox
+                    # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
+                    if cell:
+                        clean_name = row[0].rstrip()
+                        person_department [ clean_name ] = number_department [number]
 
-                # first cell - get the name
-                name = re.findall(r"\>(.*?)\<", str(left_cell))[0]
+        # assign status to each person
+        target_department = person_department [ clean_target_person ]
 
-                # get the right cell and dig inside untill the checkbox is found. 
-                # Then get the checkbox
-                checkbox = right_cell.findChildren('input')[0]
-                # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
-                status = True if 'checked' in checkbox.attrs.values() else False
-
-                person_status.append((name, status))
+        for person, dept in person_department.items():
+            if dept == target_department:
+                affiliated_people.append(person)
     else:
         # at least the author must be affiliated
-        person_status.append(('the_author', True))
+        affiliated_people.append(('the_author', True))
 
-    affiliated_people = []
+    # print(f"Person -> department: {person_department}")
 
-    # collected all but return affiliated only
-    for person, status in person_status:
-        if status:
-            affiliated_people.append(person)
-
-    # print(person_status)
+    # print(f"Person -> status: {affiliated_people}")
     
     return affiliated_people
-
 
 def search(names, dates):
 
@@ -108,7 +122,7 @@ def search(names, dates):
         front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
     link = front
 
-   # print(link)
+    # print(link)
     # print(f'Dates: {dates}')
 # 'https://ruj.uj.edu.pl/xmlui/handle/item/82915?view=mod1&search-result=true&query=&current-scope=&filtertype_0=author&filtertype_1=title&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0=Cie%C5%9Bla%2C+Micha%C5%82+%5BSAP11018214%5D&rpp=50&sort_by=score&order=desc'
 # Cieśla, Michał [SAP11018214]
@@ -147,7 +161,7 @@ def search(names, dates):
             publication = Publication()
             publication.id = right.replace('\"', '').replace(' ', '')
             publications.append(publication)
-            publication.affiliated_authors = parse_publication(publication.id)
+            publication.affiliated_authors = parse_publication(publication.id, name)
         # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
         if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))
@@ -167,7 +181,7 @@ def search(names, dates):
 
     print(f"Parsing took: Seconds: {end - start}. Minutes: {(end - start) / 60}")
 
-    for number, publication in enumerate(publications):
-        print(f"{number} : {publication.id} : {publication.title}")
+    # for number, publication in enumerate(publications):
+    #     print(f"{number} : {publication.id} : {publication.title}")
 
     return publications
