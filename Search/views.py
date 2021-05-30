@@ -39,6 +39,7 @@ def rec_choose(publikacje):
             points = points - publikacja.points
             cost = cost - publikacja.cost
             numery.pop()
+        cost=round(cost,5)
     max_points = round(max_points, 2)
     return None
 
@@ -67,7 +68,7 @@ def search_results(request):
             namesOfAuthors = form.cleaned_data['authors']
             names = namesOfAuthors.split(';')
 
-            print(names)
+            #print(names)
 
             for name in names:
                 author = Author()
