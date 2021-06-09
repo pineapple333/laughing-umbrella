@@ -18,32 +18,48 @@ cost = 0.0
 slots = 2.0
 
 
-def rec_choose(publikacje):
-    global max_points
-    global points
-    global numery
-    global max_numery
-    global cost
-    global slots
-
-    for numer, publikacja in enumerate(publikacje):
-        #print(publikacja.cost)
-        #print(cost)
-        #print("---")
-        if publikacja.cost <= (slots - cost) and numer not in numery:
-            numery.append(numer)
-            points = points + publikacja.points
-            cost = cost + publikacja.cost
-            if max_points < points:
-                max_points = points
-                max_numery = numery.copy()
-            rec_choose(publikacje)
-            points = points - publikacja.points
-            cost = cost - publikacja.cost
-            numery.pop()
-        cost=round(cost,5)
-    max_points = round(max_points, 2)
-    return None
+def knapSack(W, wt, val, n):
+    wynik=[]
+    K = [[0 for w in range(W + 1)]
+            for i in range(n + 1)]
+             
+    # Build table K[][] in bottom
+    # up manner
+    for i in range(n + 1):
+        for w in range(W + 1):
+            if i == 0 or w == 0:
+                K[i][w] = 0
+            elif wt[i - 1].cost <= w:
+                K[i][w] = max(val[i - 1]
+                  + K[i - 1][w - wt[i - 1].cost],
+                               K[i - 1][w])
+            else:
+                K[i][w] = K[i - 1][w]
+ 
+    # stores the result of Knapsack
+    res = K[n][W]
+     
+    w = W
+    for i in range(n, 0, -1):
+        if res <= 0:
+            break
+        # either the result comes from the
+        # top (K[i-1][w]) or from (val[i-1]
+        # + K[i-1] [w-wt[i-1]]) as in Knapsack
+        # table. If it comes from the latter
+        # one/ it means the item is included.
+        if res == K[i - 1][w]:
+            continue
+        else:
+ 
+            # This item is included.
+            wynik.append(wt[i-1])
+             
+            # Since this weight is included
+            # its value is deducted
+            res = res - val[i - 1]
+            w = w - wt[i - 1].cost
+    return wynik
 
 
 def search_results(request):
@@ -118,13 +134,21 @@ def search_results(request):
                     publikacja.m = len(publikacja.authors)
                 print(f"The total number of publications: {len(publikacje)}")
                 start = time.time()
-                rec_choose(publikacje)
+                W=int(2.0*1000)
+                n=len(publikacje)
+                val=[]
+                wt=[]
+                for publikacja in publikacje:
+                    val.append(int(publikacja.points*1000))
+                    publikacja.cost=int(publikacja.cost*1000)
+                    wt.append(publikacja)
+                best_publications=knapSack(W, wt, val, n)
                 end = time.time()
                 print(f"Recursive operation took: Seconds: {end - start}. Minutes: {(end - start)/60}")
-                best_publications = []
-                for numer in max_numery:
-                    best_publications.append(publikacje[numer])
-
+                for publikacja in best_publications:
+                    publikacja.cost=publikacja.cost/1000
+                    max_points=max_points+publikacja.points
+                max_points=round(max_points,2)
                 for publikacja in publikacje:
                     publikacja.points = round(publikacja.points, 2)
                     publikacja.cost = round(publikacja.cost, 2)
