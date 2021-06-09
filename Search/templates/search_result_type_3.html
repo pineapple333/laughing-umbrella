@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+        <div class="card-top sum-wrapper">
+            <div class="sum-of-points">Sumaryczna liczba punktów</div>
+            <div class="sum-of-points">{{ sumOfPoints }}</div>
+        </div>
+        {% for author in authors %}
+                <div class="data-result">
+                    <div class="card-top">
+                        <div class="author_name">{{ author.name_surname }}</div>
+                        <div class="card-top">
+                            <div class="points-text">Uzyskane punkty:</div> <div class="author_name">{{ author.max_points }}</div>
+                        </div>
+                    </div>
+                    <div class="pub-list-title">Wybrane publikacje:</div>
+                    <div class="pub-wrapper card-pub-over">
+                        <div class="pub-part name-part">Nazwa</div>
+                        <div class="pub-part margin-better rest-pub-part">Pc</div>
+                        <div class="pub-part rest-pub-part">P</div>
+                        <div class="pub-part rest-pub-part">U</div>
+                        <div class="pub-part rest-pub-part">k</div>
+                        <div class="pub-part rest-pub-part">m</div>
+                        <div class="pub-part rest-pub-part">Rok publikacji</div>
+                    </div>
+                    {% for pub in author.best_publications %}
+                    {% if pub %}
+                    <div class="pub-wrapper pub-individual">
+                        <div class="pub-part name-part">{{ pub.title }}</div>
+                        <div class="pub-part margin-better rest-pub-part">{{ pub.points }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.P }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.cost }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.authors|length }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.affiliated_authors|length }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.year }}</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="pub-list-title pub-all">Wszystkie publikacje:</div>
+                    <div class="pub-wrapper card-pub-over">
+                        <div class="pub-part name-part">Nazwa</div>
+                        <div class="pub-part margin-better rest-pub-part">Pc</div>
+                        <div class="pub-part rest-pub-part">P</div>
+                        <div class="pub-part rest-pub-part">U</div>
+                        <div class="pub-part rest-pub-part">k</div>
+                        <div class="pub-part rest-pub-part">m</div>
+                        <div class="pub-part rest-pub-part">Rok publikacji</div>
+                    </div>
+                    {% for pub in author.publications %}
+                    {% if pub %}
+                        {% if pub in author.best_publications %}
+                    <div class="pub-wrapper pub-individual pub-choosen">
+                        {% else %}
+                    <div class="pub-wrapper pub-individual">
+                        {% endif %}
+                        <div class="pub-part name-part">{{ pub.title }}</div>
+                        <div class="pub-part margin-better rest-pub-part">{{ pub.points }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.P }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.cost }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.authors|length }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.affiliated_authors|length }}</div>
+                        <div class="pub-part rest-pub-part">{{ pub.year }}</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+        {% endfor %}
+{% endblock %}

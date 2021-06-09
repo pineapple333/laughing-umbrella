@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="data-result search-bar">
-        <form action="/search/" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <button type="submit">Search</button>
-        </form>
+    <div class="search-wrapper">
+
+        <div class="search-main">
+            <div class="top-title">Ewaluacja pracowników</div>
+            <div class="under-title"> Wybierz pracowników </div>
+            <input id="userinput" type="text" class="input-author" placeholder="Imię, Nazwisko">
+            <button id="enter" class="enter-bttn">Dodaj do listy</button>
+
+            <ul id="bold" class="author-list">
+            </ul>
+
+        </div>
+
+        <div class="data-result search-bar">
+            <form action="/search/" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit"  class="enter-bttn evaluate-bttn">Ewaluuj wybranych pracowników</button>
+            </form>
+        </div>
     </div>
 
 
-    <div>
-        <div class="top-title">Ewaluacja pracowników</div>
-        <div class="under-title"> Wybierz pracowników </div>
-        <input id="userinput" type="text" class="input-author" placeholder="Imię, Nazwisko">
-        <button id="enter" class="enter-bttn">Dodaj do listy</button>
-
-        <ul id="bold" class="author-list">
-        </ul>
-
-    </div>
 
 
     {% load static %}
