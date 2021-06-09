@@ -78,7 +78,13 @@ def search_results(request):
                 max_numery = []
                 cost = 0.0
                 author.name_surname = name
-                publikacje = search(name, dates)
+                try:
+                    publikacje = search(name, dates)
+                except TimeoutError as error:
+                    error_page(request, error)
+                except:
+                    print("UNHANDLED EXCEPTION")
+
                 author.publications = publikacje
                 k = 1
                 if publikacje[0] is None:
@@ -129,6 +135,9 @@ def search_results(request):
         result = {'authors' : authors, 'sumOfPoints' : sumOfPoints}
         return render(request, 'search_results.html', result)
 
+
+def error_page(request, error):
+    return render(request, 'search_error_page.html', {'error': error})
 
 def search_index(request):
     form = SearchForm()

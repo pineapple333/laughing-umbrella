@@ -4,25 +4,13 @@ import requests
 import re
 from .models import Publication
 from lxml import etree
-import time
 
-def classifier(element):
-    checkbox = element.find_all('input')
-    if checkbox:
-        cb = checkbox[0]
-        if 'checked' in cb.attrs.values():
-            return True
-        else:
-            return False
-    else:
-        return element.text
 
 # this function receives an ID and returns a tuple 
 # structure:
-#   (author_name, is_affiliated)
-def parse_publication(pubId, target_person):
-
-    clean_target_person = f"{target_person.split()[0].replace(',','')} {target_person.split()[1]}"
+#   key: id
+#   value: (author_name, is_affiliated)
+def parse_publication(pubId):
 
     # create the link 
     link = f'https://ruj.uj.edu.pl/xmlui/handle/{pubId}/pbn'
@@ -34,12 +22,8 @@ def parse_publication(pubId, target_person):
     # print(link)
 
     # initialize the dictionary
-    person_status = []
+    id_person_status = []
 
-    person_department = {}
-    number_department = {}
-
-    affiliated_people = [] # people who are affiliated with the author
 
     # the table to parse from PBN
     table = soup.find("table", {"id":"aspect_pbn_PBNItemViewer_table_employed_tab"})
@@ -47,45 +31,38 @@ def parse_publication(pubId, target_person):
     # if the table exists
     if table:
         # get all rows
-        table_rows = table.find_all('tr')
+        rows = table.findChildren(['th', 'tr'])
+        for row in rows:
+            if row:
 
-        for tr in table_rows:
 
-            td = tr.find_all('th') + tr.find_all('td')
-            row = [classifier(i) for i in td]
-            # print(row)
+                # if something is very wrong
+                if len(row.findChildren('td')) == 0:
+                    continue
 
-            if row[0] == 'autor/redaktor':
-                for number, cell in enumerate(row[1:]):
-                    number_department [number] = cell.rstrip()
-            else:
-                for number, cell in enumerate(row[1:]):
-                    # get the right cell and dig inside untill the checkbox is found. 
-                    # Then get the checkbox
-                    # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
-                    if cell:
-                        clean_name = row[0].rstrip()
-                        person_department [ clean_name ] = number_department [number]
+                # cells from one row. Left with a name. Right with a status (checkbox)
+                left_cell, right_cell = row.findChildren('td')
 
-        # assign status to each person
-        target_department = person_department [ clean_target_person ]
+                # first cell - get the name
+                name = re.findall(r"\>(.*?)\<", str(left_cell))[0]
 
-        for person, dept in person_department.items():
-            if dept == target_department:
-                affiliated_people.append(person)
-    else:
-        # at least the author must be affiliated
-        affiliated_people.append(('the_author', True))
+                # get the right cell and dig inside untill the checkbox is found. 
+                # Then get the checkbox
+                checkbox = right_cell.findChildren('input')[0]
+                # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
+                status = True if 'checked' in checkbox.attrs.values() else False
 
-    # print(f"Person -> department: {person_department}")
+                # reporting for debug purposes
+                # print(f'Name: {name}, status: {status}')
+                if status:
+                    id_person_status.append((name, status))
 
-    # print(f"Person -> status: {affiliated_people}")
+    #print(id_person_status)
     
-    return affiliated_people
+    return id_person_status
+
 
 def search(names, dates):
-
-    start = time.time()
 
     # link = 'https://ruj.uj.edu.pl/xmlui/discover?filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+%5BSAP11018214%5D&filtertype_2=dateIssued&filter_relational_operator_2=equals&filter_2=2019&view=mod1&'
     # correct
@@ -122,15 +99,13 @@ def search(names, dates):
         front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
     link = front
 
-    # print(link)
+   # print(link)
     # print(f'Dates: {dates}')
 # 'https://ruj.uj.edu.pl/xmlui/handle/item/82915?view=mod1&search-result=true&query=&current-scope=&filtertype_0=author&filtertype_1=title&filter_relational_operator_1=contains&filter_relational_operator_0=equals&filter_1=&filter_0=Cie%C5%9Bla%2C+Micha%C5%82+%5BSAP11018214%5D&rpp=50&sort_by=score&order=desc'
 # Cieśla, Michał [SAP11018214]
 # Dybiec, Bartłomiej [SAP11018789]
 # https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Dybiec,+Bartłomiej+[SAP11018789]&submit_apply_filter=Apply&query=&scope=/
 # https://ruj.uj.edu.pl/xmlui/discover?view=mod1&query=&scope=/&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Cieśla,+Michał+[SAP11018214]&filtertype_2=author&filter_relational_operator_2=equals&filter_2=Dybiec,+Bartłomiej+[SAP11018789]&filtertype_3=author&filter_relational_operator_3=equals&filter_3=Capała,+Karol+[USOS176576]&submit_apply_filter=Apply&query=&scope=/
-    
-    #print(link)
     
     r = requests.get(link)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -161,7 +136,7 @@ def search(names, dates):
             publication = Publication()
             publication.id = right.replace('\"', '').replace(' ', '')
             publications.append(publication)
-            publication.affiliated_authors = parse_publication(publication.id, name)
+            #same_department_list = parse_publication(right.replace('\"','').replace(' ',''))
         # if left.strip('"') == "dc.contributor.author" or left.strip('"') == "dc.contributor.editor":
         if left.strip('"') == "dc.contributor.author":    
             publication.authors.append(right.replace('\"',''))
@@ -171,17 +146,10 @@ def search(names, dates):
             publication.points = int(right.replace('\"','').split(':')[1].strip(' '))
         if left.strip('"') == "dc.date.issued":
             publication.year = right.replace('\"','')
-    # publications.append(publication)
+    publications.append(publication)
 
     # print(publications)
 
     #print(f"Decoded URL: {requests.utils.unquote('https://ruj.uj.edu.pl/xmlui/discover?view=mod3&query=&scope=%2F&filtertype_1=author&filter_relational_operator_1=equals&filter_1=Dybiec%2C+Bart%C5%82omiej+%5BSAP11018789%5D&filtertype_2=dateIssued&filter_relational_operator_2=contains&filter_2=2018%2C+2019&filtertype_4=title&filter_relational_operator_4=contains&filter_4=&submit_apply_filter=Apply&query=&scope=%2F')}")
-
-    end = time.time()
-
-    print(f"Parsing took: Seconds: {end - start}. Minutes: {(end - start) / 60}")
-
-    # for number, publication in enumerate(publications):
-    #     print(f"{number} : {publication.id} : {publication.title}")
 
     return publications
