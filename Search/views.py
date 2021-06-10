@@ -13,34 +13,34 @@ from .forms import SearchForm
 slots = 2.0
 
 
-def rec_choose(W, wt):
-    n=len(wt)
+def rec_choose(sloty, publikacje):
+    n=len(publikacje)
     wynik=[]
-    K = [[0 for w in range(W + 1)]
+    K = [[0 for w in range(sloty + 1)]
             for i in range(n + 1)]
     for i in range(n + 1):
-        for w in range(W + 1):
+        for w in range(sloty + 1):
             if i == 0 or w == 0:
                 K[i][w] = 0
-            elif wt[i - 1].cost <= w:
-                K[i][w] = max(wt[i - 1].points
-                  + K[i - 1][w - wt[i - 1].cost],
+            elif publikacje[i - 1].cost <= w:
+                K[i][w] = max(publikacje[i - 1].points
+                  + K[i - 1][w - publikacje[i - 1].cost],
                                K[i - 1][w])
             else:
                 K[i][w] = K[i - 1][w]
  
-    res = K[n][W]
+    res = K[n][sloty]
      
-    w = W
+    w = sloty
     for i in range(n, 0, -1):
         if res <= 0:
             break
         if res == K[i - 1][w]:
             continue
         else:
-            wynik.append(wt[i-1])
-            res = res - wt[i - 1].points
-            w = w - wt[i - 1].cost
+            wynik.append(publikacje[i-1])
+            res = res - publikacje[i - 1].points
+            w = w - publikacje[i - 1].cost
     return wynik
 
 
