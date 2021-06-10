@@ -8,6 +8,7 @@ class Publication:
 		self.authors = []
 		self.title = ""
 		self.points = 0
+		self.P = 0
 		self.year = 0
 		self.cost = 0
 		self.m = 0

@@ -6,7 +6,7 @@ body{
     margin-bottom: 20px;
     box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.1);
     padding:20px;
-    width: 800px;
+    width: 1200px;
     background-color:white;
 }
 
@@ -33,6 +33,10 @@ body{
     font-weight: bold;
 }
 
+.search-wrapper{
+    display:flex;
+    flex-wrap: wrap;
+}
 
 .container{
     padding-top: 30px;
@@ -53,12 +57,24 @@ body{
     margin-bottom: 10px;
 }
 
+.choose-input{
+    height: 30px;
+    width: 500px;
+}
+
 .search-bar{
     width: 600px;
     padding-right: 60px;
-    position: fixed;
     right: 150px;
     box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.35);
+}
+
+.search-main{
+    margin-right: 50px;
+}
+
+.choosen-authors{
+    hidden: true;
 }
 
 .card-top{
@@ -182,6 +198,12 @@ ul{
 }
 
 
+.evaluate-bttn{
+    margin-left: 0px;
+    margin-top: 30px;
+}
+
+
 .top-title{
     font-size: 32px;
     color: #005CA7;
@@ -202,3 +224,17 @@ ul{
     border-radius: 20px;
 }
 
+
+.pub-individual{
+    border-bottom: 1px solid #D3D3D3;
+}
+
+
+.pub-choosen{
+    background-color: #e3edfc;
+    border: 2px solid #3260a8;
+}
+
+.pub-all{
+    margin-top: 40px;
+}
