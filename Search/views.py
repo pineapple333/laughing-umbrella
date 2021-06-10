@@ -15,7 +15,6 @@ points = 0
 numery = []
 max_numery = []
 cost = 0.0
-slots = 2.0
 
 
 def rec_choose(publikacje):
@@ -24,13 +23,12 @@ def rec_choose(publikacje):
     global numery
     global max_numery
     global cost
-    global slots
 
     for numer, publikacja in enumerate(publikacje):
         #print(publikacja.cost)
         #print(cost)
         #print("---")
-        if publikacja.cost <= (slots - cost) and numer not in numery:
+        if publikacja.cost <= (2.0 - cost) and numer not in numery:
             numery.append(numer)
             points = points + publikacja.points
             cost = cost + publikacja.cost
@@ -52,7 +50,6 @@ def search_results(request):
     global points
     global numery
     global cost
-    global slots
 
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -71,13 +68,6 @@ def search_results(request):
             namesOfAuthors = form.cleaned_data['authors']
             names = namesOfAuthors.split(';')
 
-            numOfSlots = form.cleaned_data['slots']
-
-            slots = numOfSlots
-
-            display_type = form.cleaned_data['display_type']
-            print("display type ", display_type)
-
             #print(names)
 
             for name in names:
@@ -88,7 +78,13 @@ def search_results(request):
                 max_numery = []
                 cost = 0.0
                 author.name_surname = name
-                publikacje = search(name, dates)
+                try:
+                    publikacje = search(name, dates)
+                except TimeoutError as error:
+                    error_page(request, error)
+                except:
+                    print("UNHANDLED EXCEPTION")
+
                 author.publications = publikacje
                 k = 1
                 if publikacje[0] is None:
@@ -113,7 +109,6 @@ def search_results(request):
                     k = len(publikacja.affiliated_authors)
                     koszt = (1 / k) * (punkty / publikacja.points)
                     publikacja.points = punkty / k
-                    publikacja.P = round(punkty, 2)
                     publikacja.cost = koszt
                     publikacja.m = len(publikacja.authors)
                 print(f"The total number of publications: {len(publikacje)}")
@@ -138,14 +133,11 @@ def search_results(request):
                 publikacje = best_publications
 
         result = {'authors' : authors, 'sumOfPoints' : sumOfPoints}
+        return render(request, 'search_results.html', result)
 
-        print("display type = ", display_type)
-        if(display_type == "1"):
-            return render(request, 'search_result_type_1.html', result)
-        elif(display_type == "2"):
-            return render(request, 'search_results.html', result)
-        else:
-            return render(request, 'search_result_type_3.html', result)
+
+def error_page(request, error):
+    return render(request, 'search_error_page.html', {'error': error})
 
 def search_index(request):
     form = SearchForm()
