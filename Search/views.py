@@ -113,6 +113,7 @@ def search_results(request):
                     publikacja.cost=int(publikacja.cost*1000)
                 best_publications=rec_choose(slots, publikacje)
                 end = time.time()
+                slots=slots/1000
                 print(f"Recursive operation took: Seconds: {end - start}. Minutes: {(end - start)/60}")
                 for publikacja in publikacje:
                     publikacja.cost=publikacja.cost/1000
