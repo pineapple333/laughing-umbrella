@@ -80,8 +80,9 @@ def search_results(request):
                 publikacje = search(name, dates)
                 author.publications = publikacje
                 k = 1
-                if publikacje[0] is None:
-                    publikacje.pop(0)
+                if len(publikacje)>0:
+                    if publikacje[0] is None:
+                        publikacje.pop(0)
                 for publikacja in publikacje:
                     if len(publikacja.authors) == 0:
                         publikacja.authors.append("PLACEHOLDER")
