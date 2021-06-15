@@ -63,18 +63,49 @@ body{
 }
 
 .search-bar{
+    height: 262px;
     width: 600px;
     padding-right: 60px;
     right: 150px;
     box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.35);
 }
 
+.or-wrap{
+    margin-top:15px;
+}
+
 .search-main{
     margin-right: 50px;
+    width: 600px;
+}
+
+.button-upload{
+    margin-left:0px;
 }
 
 .choosen-authors{
     hidden: true;
+}
+
+.marg-bttn{
+    margin-left: 50px;
+}
+
+.inp-wrapp{
+    display: flex;
+    flex-direction: column;
+}
+
+.inp-file-txt{
+    font-size: 15px;
+}
+
+.material-icons{
+    vertical-align:middle;
+}
+
+.file-inp-marg{
+    margin-top: 15px;
 }
 
 .card-top{
@@ -179,7 +210,6 @@ ul{
 
 
 .enter-bttn{
-    margin-left: 50px;
     border-radius: 10px;
     padding: 5px;
     padding-left: 15px;
@@ -190,6 +220,10 @@ ul{
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.35);
 }
 
+
+.file-upload-list{
+    display:none;
+}
 
 .enter-bttn:hover{
     color: black;

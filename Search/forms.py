@@ -9,8 +9,8 @@ DISPLAY_VIEW= [
     ]
 
 class SearchForm(forms.Form):
-    authors = forms.CharField(label="Autorzy", widget=forms.TextInput(attrs={'class': 'input-field', 'id': 'addNew'}))
+    authors = forms.CharField(label="", widget=forms.TextInput(attrs={'class': 'input-field', 'id': 'addNew', 'hidden':'true'}))
     date1 = forms.DateField(label="Od", widget=forms.DateTimeInput(attrs={'class': 'date-field'}), input_formats=settings.DATE_INPUT_FORMATS)
     date2 = forms.DateField(label="Do", widget=forms.DateTimeInput(attrs={'class': 'date-field'}), input_formats=settings.DATE_INPUT_FORMATS)
-    slots = forms.IntegerField(label="Liczba slotów", widget=forms.TextInput(attrs={'class': 'input-field', 'id': 'slots'}))
+    slots = forms.IntegerField(label="Liczba slotów", widget=forms.TextInput(attrs={'class': 'input-field', 'id': 'slots', 'value':2}))
     display_type = forms.CharField(label='Typ wyświetlenia', widget=forms.Select(choices=DISPLAY_VIEW, attrs={'class': 'choose-input'}))

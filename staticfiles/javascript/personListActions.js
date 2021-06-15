@@ -1,4 +1,3 @@
-//variables for my shopping list
 var input = document.getElementById("userinput");
 var button = document.getElementById("enter");
 var ul = document.querySelector("ul");
@@ -6,9 +5,8 @@ var list = document.getElementsByTagName("li");
 var trash = document.getElementsByClassName("delete");
 var btndelete = document.getElementById("trash");
 var addNewFormField = document.getElementById("addNew");
-// const myUL = document.getElementById("bold");
+var file_input = document.getElementById('input-list');
 
-//For removing items with delete button
 Array.prototype.slice.call(trash).forEach(function(item) {
   item.addEventListener("click", function(e) {
     e.target.parentNode.remove()
@@ -17,23 +15,20 @@ Array.prototype.slice.call(trash).forEach(function(item) {
 
 var authors = [];
 
-//loop for to strikeout the list
 for (var i = 0; i < list.length; i++) {
   list[i].addEventListener("click", strikeout);
 }
 
-//toggle between classlist
 function strikeout() {
   this.classList.toggle("done");
 }
 
-//check the length of the string entered
 function inputlength() {
   return input.value.length;
 }
 
-//collect data that is inserted
-function addli() {
+function addli(input_val) {
+console.log("adding " , input_val)
   var li = document.createElement("div");
   var btn = document.createElement("button");
   var div = document.createElement("div");
@@ -45,14 +40,14 @@ function addli() {
   btn.innerHTML = "x";
 
   div.className = "authorName";
-  div.innerText = input.value + "";
+  div.innerText = input_val + "";
 
   li.appendChild(div);
   li.appendChild(btn);
 
   ul.appendChild(li);
 
-  authors.push(input.value);
+  authors.push(input_val);
 
   updateFormField();
   btn.addEventListener("click", function(e) {
@@ -71,22 +66,31 @@ function updateFormField() {
     addNewFormField.value = authors.join(";");
 }
 
-//this will add a new list item after click
 function addListAfterClick() {
   if (inputlength() > 0) {
-    addli();
+    addli(input.value);
   }
 }
 
-//this will add a new list item with keypress
+file_input.onchange = function(){
+  var file = this.files[0];
+  var reader = new FileReader();
+  reader.onload = function(progressEvent){
+
+    var lines = this.result.split('\n');
+    for(var line = 0; line < lines.length; line++){
+      addli(lines[line]);
+    }
+  };
+  reader.readAsText(file);
+};
+
 function addListKeyPress(event) {
   if (inputlength() > 0 && event.which === 13) {
     addli();
   }
 }
 
-//this will check for the event/keypress and create new list item
 input.addEventListener("keypress", addListKeyPress);
 
-//this will check for a click event and create new list item
 button.addEventListener("click", addListAfterClick);

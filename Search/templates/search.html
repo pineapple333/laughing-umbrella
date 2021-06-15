@@ -6,9 +6,25 @@
         <div class="search-main">
             <div class="top-title">Ewaluacja pracowników</div>
             <div class="under-title"> Wybierz pracowników </div>
-            <input id="userinput" type="text" class="input-author" placeholder="Imię, Nazwisko">
-            <button id="enter" class="enter-bttn">Dodaj do listy</button>
-
+            <div class="inp-wrapp">
+                <div>
+                    <input id="userinput" type="text" class="input-author" placeholder="Imię, Nazwisko">
+                    <button id="enter" class="enter-bttn marg-bttn">Dodaj do listy</button>
+                </div>
+                <div class="or-wrap">lub</div>
+                <div class="file-inp-marg">
+                    <label for="input-list" class="custom-file-upload enter-bttn button-upload">
+                        Dodaj pracowników z pliku
+                        <span class="material-icons">
+                            file_upload
+                        </span>
+                    </label>
+                    <input id="input-list" class="file-upload-list" type="file" />
+                    <div class="inp-file-txt">
+                    *Każdy pracownik powinien byc oddzielony znakiem nowej lini
+                    </div>
+                </div>
+            </div>
             <ul id="bold" class="author-list">
             </ul>
 
