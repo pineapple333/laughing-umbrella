@@ -9,10 +9,7 @@ import time
 
 from .forms import SearchForm
 
-# Create your views here.
-slots = 2.0
-
-
+#Funkcja wyboru najlepszych publikacji
 def rec_choose(sloty, publikacje):
     n=len(publikacje)
     wynik=[]
@@ -56,23 +53,14 @@ def search_results(request):
         sumOfPoints = 0
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            # publikacje = search('Dybiec, Bartłomiej [SAP11018789]', '2018, 2019')
             dates = str(form.cleaned_data['date1'].year) + ', ' + str(form.cleaned_data['date2'].year)
             namesOfAuthors = form.cleaned_data['authors']
             names = namesOfAuthors.split(';')
-
             numOfSlots = form.cleaned_data['slots']
-
             slots = numOfSlots
-
             display_type = form.cleaned_data['display_type']
-            print("display type ", display_type)
 
-            #print(names)
-
+			#Pętla po ewaluowanych pracownikach
             for name in names:
                 author = Author()
                 max_points = 0
@@ -80,12 +68,11 @@ def search_results(request):
                 publikacje = search(name, dates)
                 author.publications = publikacje
                 k = 1
-                if len(publikacje)>0:
-                    if publikacje[0] is None:
-                        publikacje.pop(0)
+				
+				#Pętla po publikacjach danego pracownika
                 for publikacja in publikacje:
-                    if len(publikacja.authors) == 0:
-                        publikacja.authors.append("PLACEHOLDER")
+				
+				#Obliczanie punktacji dla publikacji
                     if publikacja.points == 0:
                         publikacja.points = 5
                     if publikacja.points >= 100:
@@ -97,25 +84,23 @@ def search_results(request):
                     if punkty < publikacja.points / 10:
                         punkty = publikacja.points / 10
 
-                    #Get publication authors from same department
-                    # co_department_authors = parse_publication(publikacja.id)
-
+				
                     k = len(publikacja.affiliated_authors)
                     koszt = (1 / k) * (punkty / publikacja.points)
                     publikacja.points = punkty / k
                     publikacja.P = round(punkty, 2)
                     publikacja.cost = koszt
                     publikacja.m = len(publikacja.authors)
-                print(f"The total number of publications: {len(publikacje)}")
-                start = time.time()
+
+				#Wyszukiwanie najlepszych publikacji do ewaluacji
                 slots=int(slots*1000)
                 for publikacja in publikacje:
                     publikacja.points=int(publikacja.points*1000)
                     publikacja.cost=int(publikacja.cost*1000)
+					
                 best_publications=rec_choose(slots, publikacje)
-                end = time.time()
                 slots=slots/1000
-                print(f"Recursive operation took: Seconds: {end - start}. Minutes: {(end - start)/60}")
+
                 for publikacja in publikacje:
                     publikacja.cost=publikacja.cost/1000
                     publikacja.points=publikacja.points/1000
@@ -131,11 +116,8 @@ def search_results(request):
                 author.best_publications = best_publications
                 authors.append(author)
 
-                publikacje = best_publications
-
         result = {'authors' : authors, 'sumOfPoints' : sumOfPoints}
 
-        print("display type = ", display_type)
         if(display_type == "1"):
             return render(request, 'search_result_type_1.html', result)
         elif(display_type == "2"):
