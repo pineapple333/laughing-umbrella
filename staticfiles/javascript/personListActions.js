@@ -72,7 +72,7 @@ function addListAfterClick() {
   }
 }
 
-file_input.onchange = function(){
+file_input.onchange = function(event){
   var file = this.files[0];
   var reader = new FileReader();
   reader.onload = function(progressEvent){
@@ -83,6 +83,7 @@ file_input.onchange = function(){
     }
   };
   reader.readAsText(file);
+  event.target.value = '';
 };
 
 function addListKeyPress(event) {
