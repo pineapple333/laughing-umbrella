@@ -28,10 +28,13 @@ function inputlength() {
 }
 
 function addli(input_val) {
-console.log("adding " , input_val)
   var li = document.createElement("div");
   var btn = document.createElement("button");
   var div = document.createElement("div");
+
+  input_val = input_val.replaceAll("\\n", "");
+  input_val = input_val.replaceAll("\r", "");
+
 
   li.addEventListener("click", strikeout);
   li.className = "author-search-card";
