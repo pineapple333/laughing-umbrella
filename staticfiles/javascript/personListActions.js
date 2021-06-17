@@ -7,17 +7,9 @@ var btndelete = document.getElementById("trash");
 var addNewFormField = document.getElementById("addNew");
 var file_input = document.getElementById('input-list');
 
-Array.prototype.slice.call(trash).forEach(function(item) {
-  item.addEventListener("click", function(e) {
-    e.target.parentNode.remove()
-  });
-})
 
 var authors = [];
 
-for (var i = 0; i < list.length; i++) {
-  list[i].addEventListener("click", strikeout);
-}
 
 function strikeout() {
   this.classList.toggle("done");
