@@ -105,6 +105,7 @@ def search(names, dates):
         cnt += 1
     if date:
         front += f'&filtertype_{cnt}=dateIssued&filter_relational_operator_{cnt}=contains&filter_{cnt}={dates_range}'
+    front += f'&filtertype_{cnt+1}=doctype&filter_relational_operator_{cnt+1}=equals&filter_{cnt+1}=JournalArticle'
     link = front
 
  
