@@ -1,11 +1,8 @@
 from django.shortcuts import render
 from .models import Publication
 from .models import Author
-from django.http import HttpResponse
-import json
 from .parser import search, parse_publication
 import math
-import time
 
 from .forms import SearchForm
 

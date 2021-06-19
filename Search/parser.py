@@ -3,8 +3,6 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from .models import Publication
-from lxml import etree
-import time
 
 
 def classifier(element):
@@ -79,7 +77,6 @@ def parse_publication(pubId, target_person):
 
 
 def search(names, dates):
-    start = time.time()
 
 
     name = names
@@ -145,10 +142,6 @@ def search(names, dates):
             publication.points = int(right.replace('\"', '').split(':')[1].strip(' '))
         if left.strip('"') == "dc.date.issued":
             publication.year = right.replace('\"', '')
-   
-    end = time.time()
-
-    print(f"Parsing took: Seconds: {end - start}. Minutes: {(end - start) / 60}")
 
 
     return publications
