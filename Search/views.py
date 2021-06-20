@@ -70,6 +70,7 @@ def search_results(request):
                 for publikacja in publikacje:
 				
 				#Obliczanie punktacji dla publikacji
+                    k = len(publikacja.affiliated_authors)
                     if publikacja.points == 0:
                         publikacja.points = 5
                     if publikacja.points >= 100:
@@ -82,7 +83,6 @@ def search_results(request):
                         punkty = publikacja.points / 10
 
 				
-                    k = len(publikacja.affiliated_authors)
                     koszt = (1 / k) * (punkty / publikacja.points)
                     publikacja.points = punkty / k
                     publikacja.P = round(punkty, 2)
