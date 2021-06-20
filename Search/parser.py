@@ -17,8 +17,10 @@ def classifier(element):
         return element.text
 
 
-
 def parse_publication(pubId, target_person):
+
+    print(f"Not clean person: {target_person}")
+
     clean_target_person = f"{target_person.split()[0].replace(',', '')} {target_person.split()[1]}"
 
     # create the link
@@ -38,7 +40,7 @@ def parse_publication(pubId, target_person):
     affiliated_people = []  # people who are affiliated with the author
 
     # the table to parse from PBN
-    table = soup.find("table", {"id": "aspect_pbn_PBNItemViewer_table_employed_tab"})
+    table = soup.find("table", {"id": "aspect_pbn_PBNItemViewer_table_affiliated_tab"})
 
     # if the table exists
     if table:
@@ -50,6 +52,8 @@ def parse_publication(pubId, target_person):
             td = tr.find_all('th') + tr.find_all('td')
             row = [classifier(i) for i in td]
 
+            print(row)
+
             if row[0] == 'autor/redaktor':
                 for number, cell in enumerate(row[1:]):
                     number_department[number] = cell.rstrip()
@@ -60,7 +64,11 @@ def parse_publication(pubId, target_person):
                     # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
                     if cell:
                         clean_name = row[0].rstrip()
+                        print(f"Clean name: {clean_name}")
                         person_department[clean_name] = number_department[number]
+
+        print(f"Current link: {link}")
+        print(f"Clean target person: {person_department}")
 
         # assign status to each person
         target_department = person_department[clean_target_person]
@@ -72,12 +80,10 @@ def parse_publication(pubId, target_person):
         # at least the author must be affiliated
         affiliated_people.append(('the_author', True))
 
-
     return affiliated_people
 
 
 def search(names, dates):
-
 
     name = names
     date = dates
