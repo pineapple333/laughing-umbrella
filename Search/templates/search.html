@@ -34,6 +34,8 @@
 			Rok wydania
             <form action="/search/" method="post">
                 {% csrf_token %}
+                {{date2|linebreaks}}
+                {{slots|linebreaks}}
                 {{ form }}
                 <button type="submit"  class="enter-bttn evaluate-bttn">Ewaluuj wybranych pracowników</button>
             </form>
