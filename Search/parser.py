@@ -24,9 +24,6 @@ def parse_publication(pubId, target_person):
         clean_target_person = f"{target_person.split()[0].replace(',', '') } {' '.join(target_person.split()[1:-1])}"
     else:
         clean_target_person = f"{target_person.split()[0].replace(',', '') } {' '.join(target_person.split()[1:])}"
-    
-    print(f'Dirty target person: {target_person}')
-    print(f'Clean target person: {clean_target_person}')
 
     # create the link
     link = f'https://ruj.uj.edu.pl/xmlui/handle/{pubId}/pbn'
@@ -69,11 +66,7 @@ def parse_publication(pubId, target_person):
                     # if 'checked' is one of the attributes. Then it's checked. (found out empirically)
                     if cell:
                         clean_name = row[0].rstrip().replace(',','')
-                        print(f"Clean name: {clean_name}")
                         person_department[clean_name] = number_department[number]
-
-        print(f"Current link: {link}")
-        print(f"Person department: {person_department}")
 
         # assign status to each person
         target_department = person_department[clean_target_person]
